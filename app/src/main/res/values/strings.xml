@@ -4,9 +4,9 @@
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Send messages</string>
-    <string name="previous">Go back</string>
+    <string name="next">Begin tests</string>
+    <string name="previous">Cancel tests</string>
 
-    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_first_fragment">Please input a phone number below, or use the default one.</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 </resources>

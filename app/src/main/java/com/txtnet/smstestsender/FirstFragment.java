@@ -7,14 +7,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.google.android.material.textfield.TextInputEditText;
 import com.txtnet.smstestsender.databinding.FragmentFirstBinding;
 import com.txtnet.smstestsender.receiver.SmsDeliveredReceiver;
 import com.txtnet.smstestsender.receiver.SmsSentReceiver;
@@ -35,7 +38,7 @@ public class FirstFragment extends Fragment {
         return binding.getRoot();
 
     }
-    public final String PHONE_NUMBER = "+19133360765";
+    public static String PHONE_NUMBER = "+19133360765";
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -43,8 +46,9 @@ public class FirstFragment extends Fragment {
             @SuppressLint("UnspecifiedImmutableFlag")
             @Override
             public void onClick(View view) {
-
-
+                TextInputEditText v1 = (TextInputEditText)view.getRootView().findViewById(R.id.phoneNumber);
+                PHONE_NUMBER = (String) v1.getText().toString();
+                /*
                 SmsManager sms = SmsManager.getDefault();
                 Handler handler = new Handler();
                 ArrayList<PendingIntent> sentPendingIntents = new ArrayList<PendingIntent>();
@@ -76,10 +80,10 @@ public class FirstFragment extends Fragment {
                         sms.sendTextMessage(PHONE_NUMBER, null, "test message", sentPendingIntents.get(0), deliveredPendingIntents.get(0));
                     }
                 }, 1000L * 2); //i
-
+*/
                 NavHostFragment.findNavController(FirstFragment.this)
                         .navigate(R.id.action_FirstFragment_to_SecondFragment);
-            }
+             }
         });
     }
 

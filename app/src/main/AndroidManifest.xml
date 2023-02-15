@@ -44,9 +44,17 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".receiver.SmsSentReceiver" >
+        <receiver android:name=".receiver.SmsSentReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="SMS_SENT" />
+            </intent-filter>
         </receiver>
-        <receiver android:name=".receiver.SmsDeliveredReceiver" >
+        <receiver android:name=".receiver.SmsDeliveredReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="SMS_DELIVERED" />
+            </intent-filter>
         </receiver>
 
 
