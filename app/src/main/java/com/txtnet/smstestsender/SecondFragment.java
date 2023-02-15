@@ -1,11 +1,18 @@
 package com.txtnet.smstestsender;
 
+import static android.content.Context.CLIPBOARD_SERVICE;
+
+import android.annotation.SuppressLint;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,28 +39,22 @@ public class SecondFragment extends Fragment {
     private Future<ArrayList<String>> future;
     private View view;
     //String phoneNumber;
-
+    public static String finalResults = "";
+    private static boolean alreadyCreated = false;
+    @SuppressLint("SetTextI18n")
     public void onStart() {
         super.onStart();
-
+        if(alreadyCreated){
+            return;
+        }
         ExecutorService executor = Executors.newFixedThreadPool(3);
         Callable<ArrayList<String>> textMessageTester = new TextMessageTester(FirstFragment.PHONE_NUMBER, view.getContext());
         future = executor.submit(textMessageTester);
 
         TextView tv1 = (TextView)view.findViewById(R.id.textview_second);
-        int i = 1;
-        int j = 2;
-        //while(!future.isDone()){
-        //    StringBuilder periods = new StringBuilder();
-        //    while(i % j > 0) {
-        //        periods.append(".");
-        //        i++;
-        //    }
-        //    j = 2 + (j+1)%5;
-        //    i = 1;
-        tv1.setText("Currently sending messages... Please wait");
-       // tv1.setText("Currently sending messages" + periods.toString());
-        //}
+
+        tv1.setText("Currently sending " + TextMessageTester.SYMBOL_TABLE.size() +" messages... Please wait");
+        alreadyCreated = true;
 
     }
     @Override
@@ -73,17 +74,12 @@ public class SecondFragment extends Fragment {
         binding.buttonSecond.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // CANCEL EXECUTOR NOWWWWWWWWWWWWWWWWW
                 future.cancel(true);
-              //  NavHostFragment.findNavController(SecondFragment.this)
-              //          .navigate(R.id.action_SecondFragment_to_FirstFragment);
                 Toast.makeText(getActivity(), "Cancelled all pending messages.",
                         Toast.LENGTH_LONG).show();
             }
         });
         this.view = view;
-
-
     }
 
     @Override
@@ -92,6 +88,7 @@ public class SecondFragment extends Fragment {
         binding = null;
     }
     ArrayList<String> ars = new ArrayList<>();
+    @SuppressLint("SetTextI18n")
     public void update(String str){
         TextView tv1 = (TextView)view.findViewById(R.id.textview_second);
 
@@ -99,10 +96,7 @@ public class SecondFragment extends Fragment {
         try {
 
             failedOnes = future.get(1000, TimeUnit.MILLISECONDS);
-            Log.e("FUT", "future obtained.");
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         } catch (TimeoutException e) {
             ars.add(str);
@@ -113,7 +107,7 @@ public class SecondFragment extends Fragment {
         }
         else{
             StringBuilder finalText = new StringBuilder();
-            finalText.append("Failed characters: ");
+            finalText.append("Sending " + TextMessageTester.SYMBOL_TABLE.size() +" SMS messages. \nFailed characters: ");
             if(failedOnes.size() == 0){
                 finalText.append("NONE (so far.)");
             }
@@ -126,6 +120,43 @@ public class SecondFragment extends Fragment {
             }
             tv1.setText(finalText.toString());
         }
+    }
+    public void finish(){
+        //Button btn = (Button) this.view.findViewById(R.id.copy_results);
+        TextView tv1 = (TextView)view.findViewById(R.id.textview_second);
+        String text = tv1.getText().toString();
+        tv1.setText(getString(R.string.finalText, text, getOSBuildNumber()));
+
+        binding.copyResults.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ClipboardManager clipboard = (ClipboardManager) view.getContext().getSystemService(CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("label", finalResults);
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(getActivity(), "Text copied!",
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+        binding.copyResults.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * This method returns Build Number of the device from the OS Build fingerprint
+     * @return osBuildNumber - human entered name of the device
+     */
+    public static String getOSBuildNumber() {
+        String osBuildNumber = Build.FINGERPRINT;  //"google/shamu/shamu:5.1.1/LMY48Y/2364368:user/release-keys”
+        final String forwardSlash = "/";
+        String osReleaseVersion = Build.VERSION.RELEASE + forwardSlash;
+        try {
+            osBuildNumber = osBuildNumber.substring(osBuildNumber.indexOf(osReleaseVersion));  //"5.1.1/LMY48Y/2364368:user/release-keys”
+            osBuildNumber = osBuildNumber.replace(osReleaseVersion, "");  //"LMY48Y/2364368:user/release-keys”
+            osBuildNumber = osBuildNumber.substring(0, osBuildNumber.indexOf(forwardSlash)); //"LMY48Y"
+        } catch (Exception e) {
+            Log.e("getOSBuildNumber", "Exception while parsing - " + e.getMessage());
+        }
+
+        return osBuildNumber;
     }
 
 }

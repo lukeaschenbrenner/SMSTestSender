@@ -9,4 +9,8 @@
 
     <string name="hello_first_fragment">Please input a phone number below, or use the default one.</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="copy">Copy results to clipboard</string>
+    <string name="valid_phone_number">Valid phone number</string>
+    <string name="num">+19133360765</string>
+    <string name="finalText">%1$s \nFinished. Device build number: %2$s</string>
 </resources>

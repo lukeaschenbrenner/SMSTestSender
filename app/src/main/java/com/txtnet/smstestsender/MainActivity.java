@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.activity.result.ActivityResultCallback;
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         binding.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Hello! Thanks for being a tester (: Msg me with questions", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Hello! Thank you for testing.", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
 
             }
@@ -70,12 +71,12 @@ public class MainActivity extends AppCompatActivity {
                         // Permission is granted. Continue the action or workflow in your
                         // app.
                         if(!permission){
-                            // need perms
+                            Snackbar.make(binding.getRoot().getRootView(), "Error: sufficient permissions are not granted.", BaseTransientBottomBar.LENGTH_LONG).show();
                         }
                 }});
 
         String[] permissions = {android.Manifest.permission.READ_SMS, android.Manifest.permission.RECEIVE_SMS, android.Manifest.permission.SEND_SMS, android.Manifest.permission.WRITE_CONTACTS, Manifest.permission.READ_PHONE_STATE};
-        Button singlePermissionBtn = findViewById(R.id.permsBtn);
+        //Button singlePermissionBtn = findViewById(R.id.permsBtn);
         requestPermissionLauncher.launch(permissions);
 
                 }
@@ -115,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-
+            // Method not used
             if (intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")) {
                 Bundle extras = intent.getExtras();
                 if(extras == null) {
@@ -125,21 +126,6 @@ public class MainActivity extends AppCompatActivity {
                 Object[] pdus = (Object[]) extras.get("pdus");
 
                 String textOrder = "";
-      /*          for (Object pdu : pdus) {
-                    //need to figure out first pdu so you can substring
-                    SmsMessage msg = SmsMessage.createFromPdu((byte[]) pdu);
-                    String origin = msg.getOriginatingAddress();
-                    String body = msg.getMessageBody();
-
-                    if(PhoneNumberUtils.compare(origin, PHONE_NUMBER)) { //remove leading zeroes?
-                        if(body.contains("Process starting")){
-                            txtmsg = new TextMessage(Integer.parseInt(body.substring(0, body.indexOf(" "))));
-                        }else{
-                            for(int single : Base10Conversions.r2v(body.substring(0, 2))){
-                                textOrder += Integer.toString(single);
-                            }
-                }
-                */
                 String Message = "";
                 SmsMessage[] messages = new SmsMessage[pdus.length];
                 for (int i = 0; i < messages.length; i++) {

@@ -40,7 +40,7 @@
             android:id="@+id/phoneNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Valid phone number"
-            android:text="+19133360765" />
+            android:hint="@string/valid_phone_number"
+            android:text="@string/num" />
     </com.google.android.material.textfield.TextInputLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
